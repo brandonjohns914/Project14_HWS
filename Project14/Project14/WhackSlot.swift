@@ -10,7 +10,7 @@ import SpriteKit
 
 class WhackSlot: SKNode {
     
-    var charNode: SKSpriteNode!
+    var charNode: SKSpriteNode!                                                                             // holds pengiun image
     
     var isVisible = false
     var isHit = false
@@ -21,21 +21,24 @@ class WhackSlot: SKNode {
     {
         self.position = position
         
-        let sprite = SKSpriteNode(imageNamed: "whackHole")
+        let sprite = SKSpriteNode(imageNamed: "whackHole")                                                  // the hole on the screen
+                                                                                                            // hole node
         addChild(sprite)
         
-        let cropNode = SKCropNode()
+        let cropNode = SKCropNode()                                                                         // crop node hides the pengiun
+                                                                                                            // everything with color is visible
+                                                                                                            // everything transparent invisible
         
-        cropNode.position = CGPoint(x: 0, y: 15)
-        cropNode.zPosition = 1
-        cropNode.maskNode = SKSpriteNode(imageNamed: "whackMask")
+        cropNode.position = CGPoint(x: 0, y: 15)                                                            // 15: makes it line up with core graphics
+        cropNode.zPosition = 1                                                                              // bring forward
+        cropNode.maskNode = SKSpriteNode(imageNamed: "whackMask")                                           //image to hide the penguin
         
-        charNode = SKSpriteNode(imageNamed: "penguinGood")
-        charNode.position = CGPoint(x: 0, y: -90)
-        charNode.name = "character"
+        charNode = SKSpriteNode(imageNamed: "penguinGood")                                                  //penguin
+        charNode.position = CGPoint(x: 0, y: -90)                                                           // -90 = off the screen below the hole
+        charNode.name = "character"                                                                         //node name
         
         
-        cropNode.addChild(charNode)
+        cropNode.addChild(charNode)                                                                         // character node added to the child node
         
         
         addChild(cropNode)
@@ -43,60 +46,60 @@ class WhackSlot: SKNode {
     
     func show(hideTime: Double)
     {
-        if isVisible{return}
+        if isVisible{return}                                                                                        // visible = true return
         
-        charNode.xScale = 1
+        charNode.xScale = 1                                                                                         //returns pengiun back to normal size 
         charNode.yScale = 1
         
-        charNode.run(SKAction.moveBy(x: 0, y: 80, duration: 0.05))
+        charNode.run(SKAction.moveBy(x: 0, y: 80, duration: 0.05))                                                  // y:80 up in 0.05
         isVisible = true
         isHit = false
         
         
-        if Int.random(in: 0...2) == 0
+        if Int.random(in: 0...2) == 0                                                                               // 1/3 chance to be good pengiun
         {
-            charNode.texture = SKTexture(imageNamed: "penguinGood")
-            charNode.name = "charFriend"
+            charNode.texture = SKTexture(imageNamed: "penguinGood")                                                         // SKTexture holds image data without showing it
+            charNode.name = "charFriend"                                                                                    //node name
         }//if
         else
         {
-            charNode.texture = SKTexture(imageNamed: "penguinEvil")
-            charNode.name = "charEnemy"
+            charNode.texture = SKTexture(imageNamed: "penguinEvil")                                                 //2/3 bad pengiun
+            charNode.name = "charEnemy"                                                                                     //node name
         }//else
         
         
         DispatchQueue.main.asyncAfter(deadline: .now() + (hideTime * 3.5))
         { [weak self ] in
-            self?.hide()
+            self?.hide()                                                                                            // hides itself after some time
             
-        }
+        }//DisPatchQueue
         
     }//show
     
     func hide()
     {
-        if !isVisible {return}
+        if !isVisible {return}                                                                                      // not visible return
         
-        charNode.run(SKAction.moveBy(x: 0, y: -80, duration: 0.05))
-        isVisible = false
+        charNode.run(SKAction.moveBy(x: 0, y: -80, duration: 0.05))                                                 // moves -80 to hide to hole
+        isVisible = false                                                                                           // hide
     }//hide
     
     func hit()
-    {
+    {                                                                                                               //SKAction requires closure to run
         isHit = true
         
-        let delay = SKAction.wait(forDuration: 0.25)
+        let delay = SKAction.wait(forDuration: 0.25)                                                                // wait .25 of a sec
         
-        let hide = SKAction.moveBy(x: 0, y: -80, duration: 0.5)
+        let hide = SKAction.moveBy(x: 0, y: -80, duration: 0.5)                                                     //  move -80 to hide
         
         let notVisible = SKAction.run
         { [weak self] in
-            self?.isVisible = false
+            self?.isVisible = false                                                                                 // calls it self to hide 
         }// notVisible
         
-        let sequence = SKAction.sequence([delay, hide, notVisible])
+        let sequence = SKAction.sequence([delay, hide, notVisible])                                                 // order of operations
         
-        charNode.run(sequence)
+        charNode.run(sequence)                                                                                      // run inm this order
     }//hit
     
 }//whackSlot
